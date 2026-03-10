@@ -53,6 +53,7 @@
 
       const App = {
         setup() {
+          const showDebug = ref(1)
           const locations = ref([]);
           const logs = ref([]);
           const isFlashing = ref(false);
@@ -171,6 +172,7 @@
           };
 
           return {
+            showDebug,
             locations,
             logs,
             isFlashing,
@@ -198,13 +200,26 @@
             h(Quasar.QHeader, { elevated: true, class: "bg-primary text-white" }, () =>
               h(Quasar.QToolbar, {}, () => [
                 h(Quasar.QIcon, { name: "my_location", class: "q-mr-sm" }),
-                h(Quasar.QToolbarTitle, {}, () => "Ukládání GPS lokace"),
-                h(Quasar.QBtn, {
-                  flat: true,
-                  round: true,
-                  icon: "delete",
-                  onClick: this.clearHistory,
-                }),
+                h(Quasar.QToolbarTitle, {}, () => ["Ukládání GPS lokace", h(Quasar.QTooltip, {}, () => "GitHub @ abbith18")]),
+                h(Quasar.QBtn,
+                  {
+                    flat: true,
+                    round: true,
+                    icon: "delete",
+                    onClick: this.clearHistory,
+                  },
+                  () => h(Quasar.QTooltip, {}, () => "Smazat všechny uložené lokace")
+                ),
+
+                h(Quasar.QBtn,
+                  {
+                    flat: true,
+                    round: true,
+                    icon: this.showDebug === 1 ? "code_off" : "code",
+                    onClick: () => (this.showDebug = this.showDebug === 1 ? 0 : 1),
+                  },
+                  () => h(Quasar.QTooltip, {}, () => (this.showDebug === 1 ? "Skrýt debug konzoli" : "Zobrazit debug konzoli"))
+                ),
               ])
             ),
 
@@ -241,11 +256,13 @@
                   ])
                 ),
 
-                h(
-                  "div",
-                  { class: "debug-console q-mb-md" },
-                  this.logs.map((l, i) => h("div", { key: i }, `> ${l}`))
-                ),
+                this.showDebug === 1
+                  ? h(
+                      "div",
+                      { class: "debug-console q-mb-md" },
+                      this.logs.map((l, i) => h("div", { key: i }, `> ${l}`))
+                    )
+                  : null,
 
                 h("div", { class: "text-center q-mb-md" }, [
                   h(Quasar.QBtn, {
@@ -273,14 +290,17 @@
                               icon: "map",
                               color: "primary",
                               onClick: () => this.openMap(loc.lat, loc.lng),
-                            }),
+                            },() => h(Quasar.QTooltip, {}, () => ["Otevře " h("b", {}, "Google Maps), " s uloženými souřadnicemi"])
+                             ),
                             h(Quasar.QBtn, {
                               flat: true,
                               round: true,
                               color: "negative",
                               icon: "cancel",
                               onClick: () => this.deleteLocation(loc),
-                            }),
+                            },
+                              () => h(Quasar.QTooltip, {}, () => "Smaže tyto souřadnice")
+                            ),
                           ]),
                         ])
                       )
@@ -297,6 +317,7 @@
     </script>
   </body>
 </html>
+
 
 
 
