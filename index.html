@@ -290,7 +290,7 @@
                               icon: "map",
                               color: "primary",
                               onClick: () => this.openMap(loc.lat, loc.lng),
-                            },() => h(Quasar.QTooltip, {}, () => ["Otevře " h("b", {}, "Google Maps), " s uloženými souřadnicemi"])
+                            },() => h(Quasar.QTooltip, {}, () => ["Otevře ", h("b", {}, "Google Maps"), " s uloženými souřadnicemi"])
                              ),
                             h(Quasar.QBtn, {
                               flat: true,
@@ -317,6 +317,7 @@
     </script>
   </body>
 </html>
+
 
 
 
